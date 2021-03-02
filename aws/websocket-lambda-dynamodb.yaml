@@ -1,0 +1,97 @@
+###
+# Building blocks included
+#   - Websocket API Gateway
+#   - Lambda
+#   - Lambda Layers
+#   - Dynamo DB
+#    - S3
+####
+service: websocketApiService
+
+custom:
+  ONE_BUCKET: one_bucket
+  ANOTHER_BUCKET: another_bucket
+  DYNAMO_TABLE: one_table
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  versionFunctions: false
+  websocketsApiName: websocket-api
+   # custom routes are selected by the value of action property in request body
+  websocketsApiRouteSelectionExpression: $request.body.action
+  layers:
+    - arn:aws:lambda:${self:provider.region}:<account-id>:layer:api-layers:1
+    - arn:aws:lambda:${self:provider.region}:<account-id>:layer:another-layers:1
+  memorySize: 4096      
+  timeout: 60
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:PutObjectAcl
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - arn:aws:s3:::${self:custom.ONE_BUCKET}/*
+        - arn:aws:s3:::${self:custom.ANOTHER_BUCKET}/*
+        - arn:aws:dynamodb:${self:provider.region}:<account-id>:table/${self:custom.DYNAMO_TABLE}
+
+functions:
+  connection:
+    handler: src/connection.handler
+    events:
+      - websocket:
+          route: $connect
+      - websocket:
+          route: $disconnect
+  default:
+    handler: src/default.handler
+    events:
+      - websocket:
+          route: $default
+  scraper:
+    handler: src/message.handler
+    events:
+      - websocket:
+          route: message          # will trigger if $request.body.action === "message"
+    environment:
+      WEBSOCKET_GATEWAY_URL: "<websocket-id>.execute-api.us-east-1.amazonaws.com/dev"
+
+resources:
+  Resources:
+    oneBucket:
+      Type: AWS::S3::Bucket
+      DeletionPolicy: Delete
+      Properties:
+        BucketName: ${self:custom.ONE_BUCKET}
+        AccessControl: Private
+    snapshotBucketBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        PolicyDocument:
+          Statement:
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+              Principal: "*"
+              Resource: arn:aws:s3:::${self:custom.ONE_BUCKET}/*
+        Bucket:
+          Ref: oneBucket
+    ddbTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: one_table
+        AttributeDefinitions:
+          - AttributeName: resource_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: resource_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
