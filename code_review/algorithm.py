@@ -40,3 +40,16 @@ print(pos_right)       # 2
 
 pos_left = bisect.bisect_left(string, 'b')
 print(pos_left)        # 1
+
+### HEAP
+# min-heap heapify O(log n)
+array = [21,1,45,78,3,5]
+heapq.heapify(array)
+print(array)
+
+# delete min
+array = array[1:]
+print(array)
+
+heapq.heapify(array)
+print(array)
