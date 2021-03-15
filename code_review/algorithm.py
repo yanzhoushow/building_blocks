@@ -1,12 +1,12 @@
-# covers bisect, heapq
+# covers bisect, heapq, sort
 # bisect 
 #  - works for both list and string
 #  - bisect(list/string, value, start, end) is same as bisect_right()
 #  - bisect_left(): insert before if value already exists in the list or string.
-# heap
+# heap / heapsort
 #  - heap is special tree data structure to implement priority queue
-#  - min-heap: parent node < child nodes
-#  - max-heap: parent node > child nodes   
+#  - min-heap: parent node < child nodes (default heapq.heapify()
+#  - max-heap: parent node > child nodes (heapq._max_heapify())
 #. - complexity
 #.    - heapify O(log n)
 #     - insert O(1)
@@ -44,12 +44,15 @@ print(pos_left)        # 1
 ### HEAP
 # min-heap heapify O(log n)
 array = [21,1,45,78,3,5]
-heapq.heapify(array)
-print(array)
+heapq.heapify(array)        # min-heap
+print('min-heap: ', array)
 
 # delete min
 array = array[1:]
 print(array)
 
-heapq.heapify(array)
-print(array)
+# max heapify
+heapq._heapify_max(array)
+print('max-heap: ', array)
+
+
