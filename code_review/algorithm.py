@@ -7,6 +7,12 @@
 #  - heap is special tree data structure to implement priority queue
 #  - min-heap: parent node < child nodes
 #  - max-heap: parent node > child nodes   
+#. - complexity
+#.    - heapify O(log n)
+#     - insert O(1)
+#.    - search O(n)
+#.    - find-min/max O(1)
+#.    - delete-min/max O(log n) <- re-heapify 
 import bisect
 import heapq
 
