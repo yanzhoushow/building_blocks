@@ -1,8 +1,14 @@
 # covers bisect, heapq
-# bisect works for both list and string
-# bisect(list/string, value, start, end) is same as bisect_right()
-# bisect_left(): insert before if value already exists in the list or string.
+# bisect 
+#  - works for both list and string
+#  - bisect(list/string, value, start, end) is same as bisect_right()
+#  - bisect_left(): insert before if value already exists in the list or string.
+# heap
+#  - heap is special tree data structure to implement priority queue
+#  - min-heap: parent node < child nodes
+#  - max-heap: parent node > child nodes   
 import bisect
+import heapq
 
 array = [1, 3, 5, 7]
 pos = bisect.bisect(array, 4)     # same as bisect_right(), the insert point comes after (to the right of) any existing entries of x in array
