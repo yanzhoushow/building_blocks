@@ -1,4 +1,4 @@
-# covers code review takeaways for hash, dict, Counter, collections etc
+# code review takeaways for hash, dict, Counter, collections etc
 import collections
 
 # prefer defaultdict over {}
