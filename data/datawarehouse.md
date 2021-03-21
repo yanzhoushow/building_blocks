@@ -33,6 +33,7 @@
 
 ### Resource
 - Ralph Kimball
+  - https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/etl-architecture-34-subsystems/
 
 ### ETL
 - Extract
